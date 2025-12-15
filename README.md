@@ -1,6 +1,6 @@
 # 🌊 WaveNeXt
 
-**Can Foundation Models Replace Feature Engineering?** A comparative study benchmarking N-HiTS and PatchTST (and maybe iTransformer) against the "Window & Flatten" Random Forest and LSTM baselines for Significant Wave Height ($H_s$), Peak Wave Period ($T_p$), and Wave Direction ($Dir$).
+**Can Foundation Models Replace Feature Engineering?** A comparative study benchmarking **N-HiTS** and **PatchTST** (exploring **iTransformer** for variable correlation) against the "Window & Flatten" Random Forest and LSTM baselines. This study evaluates performance on **Significant Wave Height ($H_s$)**, **Peak Wave Period ($T_p$)**, and **Wave Direction ($Dir$)**, with a specific focus on **physics-consistent losses** and **zero-shot generalization** across heterogeneous sea states.
 
 ## 📌 Overview
 
