@@ -101,7 +101,7 @@ $$
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}\left(\frac{H_s}{L} - \frac{1}{7}\right)
 $$
 
-    This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
+    * This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
 
 ### Phase 4: Generalization
 
