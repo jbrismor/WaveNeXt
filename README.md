@@ -101,14 +101,14 @@ $$
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}\left(\frac{H_s}{L} - \frac{1}{7}\right)
 $$
 
-    * This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
+This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
 
 ### Phase 4: Generalization
 
 To prove that our findings are not specific to the local bathymetry of Valencia (a common criticism of ML wave studies), we extend the benchmark to **three heterogeneous wave regimes**:
 
-1.  **Valencia (Mediterranean):** Short fetch, wind-sea dominated, complex local bathymetry.
-2. other
-3. other
+1.  **Valencia (Mediterranean):**
+2. other (hopefully other seas)
+3. other (hopefully other seas)
 
 **Goal:** Demonstrate that **N-HiTS** and **PatchTST** generalize across these regimes *without* requiring site-specific feature engineering (e.g., re-tuning window sizes or physics equations for each port).
