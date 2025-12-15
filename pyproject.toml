@@ -1,0 +1,40 @@
+[project]
+name = "wavenext"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "jupyter>=1.1.1",
+    "matplotlib>=3.9.0",
+    "numpy>=2.3.3",
+    "openpyxl>=3.1.5",
+    "optuna>=4.6.0",
+    "pandas>=2.3.1",
+    "seaborn>=0.13.2",
+    "torch==2.10.0.dev20251014+cu128",
+    "torchaudio==2.8.0.dev20251015+cu128",
+    "torchvision==0.25.0.dev20251015+cu128",
+    "transformers>=4.56.1",
+]
+
+[tool.uv]
+# This tells uv: "Check all indexes for the best version, don't stop at PyPI."
+index-strategy = "unsafe-best-match"
+
+# Restrict resolution to Linux x86_64 CPython 3.12 wheels
+required-environments = ["sys_platform == 'linux' and platform_machine == 'x86_64' and implementation_name == 'cpython' and python_version >= '3.12' and python_version < '3.13'"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchvision = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }
+pytorch-triton = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/nightly/cu128"
