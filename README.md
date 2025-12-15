@@ -1,6 +1,13 @@
 # 🌊 WaveNeXt
 
-**Can Foundation Models Replace Feature Engineering?** A comparative study benchmarking **N-HiTS** and **PatchTST** (exploring **iTransformer** for variable correlation) against the "Window & Flatten" Random Forest and LSTM baselines. This study evaluates performance on **Significant Wave Height ($H_s$)**, **Peak Wave Period ($T_p$)**, and **Wave Direction ($Dir$)**, with a specific focus on **physics-consistent losses** and **zero-shot generalization** across heterogeneous sea states.
+**Can modern time-series architectures replace feature engineering?** A comparative study benchmarking **N-HiTS** and **PatchTST** (exploring **iTransformer** for variable correlation) against the "Window & Flatten" Random Forest and LSTM baselines. This study evaluates performance on **Significant Wave Height ($H_s$)**, **Peak Wave Period ($T_p$)**, and **Wave Direction ($Dir$)**, with a specific focus on the **need of preprocessing techniques like WF on modern architectures**, **physics-consistent losses**, **generalization** across heterogeneous sea states.
+
+## Contributions
+
+1. A controlled re-evaluation of feature engineering vs architectural inductive bias in operational wave forecasting.
+2. An ablation study testing whether Window & Flatten remains beneficial for modern architectures.
+3. A systematic analysis of hard variables ($T_p$ & $Dir$) using circular losses and internal component interpretability.
+4. An out-of-region generalization benchmark without site-specific tuning.
 
 ## 📌 Overview
 
@@ -12,7 +19,7 @@ The recent study by ([*Portillo Juan et al. (2026)*](https://www.sciencedirect.c
 * **LSTMs** retained superiority for **long-term trends** and were the only viable option for **Wave Direction ($Dir$)**, where RFs failed to capture variability and converged to the mean.
 * While feature engineering (WF) improved results for complex variables like $T_p$, both models struggled to accurately capture the full energy of extreme storm events (Dataset K2).
 
-**Our Goal:** To determine if modern, specialized time-series architectures (**N-HiTS**, **PatchTST**) can achieve superior performance across *all* horizons and variables—including the "easy" Significant Wave Height ($H_s$) and the "hard" Period ($T_p$) and Direction ($Dir$)—**using only raw sequential data**, effectively rendering manual windowing techniques and hybrid physics-derived variables obsolete.
+**Our Goal:** To determine if modern, specialized time-series architectures (**N-HiTS**, **PatchTST**) can achieve superior performance across *all* horizons and variables—including the "easy" Significant Wave Height ($H_s$) and the "hard" Period ($T_p$) and Direction ($Dir$)—**using only raw sequential data**, evaluating whether modern architectures can match or exceed feature-engineered baselines without requiring manual windowing or physics-derived variables.
 
 ## 🔬 Research Hypotheses
 
@@ -32,7 +39,7 @@ DeepWave-Bench/
 ├── models/
 │   ├── baselines/           # The "Defenders" (from 2026 Paper)
 │   │   ├── rf_flatten.py    # Random Forest + Window Flattening (The SOTA to beat)
-│   │   ├── lstm_standard.py # Standard LSTM (The weak baseline)
+│   │   ├── lstm_standard.py # Standard LSTM (The standard baseline)
 │   │   └── physics_eqs.py   # Implementation of Eqs 6-10 (Derived Variables)
 │   ├── contenders/          # The "Challengers" (Modern Archs)
 │   │   ├── nhits.py         # N-HiTS (Basis Expansion)
@@ -44,7 +51,7 @@ DeepWave-Bench/
 ├── experiments/
 │   ├── 01_baseline_replication/  # Validate we can match Portillo Juan et al.'s numbers
 │   ├── 02_raw_modern_comparison/ # Modern models (Raw Input) vs RF (WF Input)
-│   └── 03_ablation_windowing/    # Do Modern models improve if we ALSO give them WF? (maybe)
+│   └── 03_ablation_windowing/    # Do Modern models improve if we ALSO give them WF?
 │
 ├── analysis/
 │   ├── comparisons.py       # Stat tests (Diebold-Mariano) to prove significance
@@ -62,7 +69,7 @@ DeepWave-Bench/
 
 ## 🛠️ Experimental Design
 
-The study is structured into four progressive phases, moving from baseline replication to advanced generalization across heterogeneous sea states.
+The study is structured into five progressive phases, moving from baseline replication to advanced generalization across heterogeneous sea states.
 
 ### Phase 1: Replication
 We first replicate the results of ([*Portillo Juan et al. (2026)*](https://www.sciencedirect.com/science/article/pii/S1463500325001416)) to establish a valid baseline and ensure fair comparison.
@@ -84,9 +91,22 @@ We train the new architectures using **standard sequential input**, removing the
 * **Models:** **N-HiTS** (Neural Hierarchical Interpolation for Time Series) and **PatchTST** (Patch Time Series Transformer).
 * **Input:** Raw time-series window $(H_s, W_s, Dir, T_p)_{t-n...t}$ without derived physics variables.
 * **Hypothesis Test:** If `MAE(PatchTST_Raw) < MAE(RF_Flattened)`, we demonstrate that architectural sophistication (native patching/hierarchical stacking) supersedes manual data restructuring.
+* **iTransformer:** We explicitly include iTransformer to test if modeling multivariate correlations (e.g., Wind $\to$ Waves) offers advantages over the channel-independent approach of PatchTST.
 
-### Phase 3: Focus on the Hard Variables ($T_p$ & $Dir$)
-Special focus is placed on advanced techniques for complex oceanographic variables that the baseline RF failed to capture:
+### Phase 3: Ablation Study - Window & Flatten
+
+**Do Modern models improve if we ALSO give them WF?**
+
+To determine whether the Window & Flatten technique provides additional benefit to modern architectures, we conduct an ablation study where we train **N-HiTS** and **PatchTST** using both raw sequential input and Window & Flatten input.
+
+* **Models:** **N-HiTS** and **PatchTST** (same as Phase 2).
+* **Input Variants:**
+    * **Raw Sequential:** Standard time-series window $(H_s, W_s, Dir, T_p)_{t-n...t}$.
+    * **Window & Flatten:** Same window size $n=6$ flattened into tabular vectors (matching Phase 1).
+* **Hypothesis Test:** If `MAE(Model_Raw) ≈ MAE(Model_WF)`, we confirm that modern architectures do not require manual windowing and can learn temporal patterns natively. If `MAE(Model_WF) < MAE(Model_Raw)`, it suggests that even sophisticated architectures benefit from explicit temporal feature engineering.
+
+### Phase 4: Focus on the Hard Variables ($T_p$ & $Dir$)
+We explore advanced techniques for complex oceanographic variables that the baseline RF failed to capture and explore if these techniques can further improve the performance of the modern architectures:
 
 * **Wave Direction ($Dir$) with Von Mises Loss:**
     * Standard regression (MSE) fails at the $0^\circ/360^\circ$ discontinuity. We implement a **Von Mises Probabilistic Loss** within N-HiTS, specifically designed for circular data distributions. This allows the model to "wrap around" North correctly, penalizing errors based on angular distance rather than Euclidean distance.
@@ -94,16 +114,16 @@ Special focus is placed on advanced techniques for complex oceanographic variabl
 * **Interpretability of Period ($T_p$):**
     * To validate if the model "learns the physics," we extract the **"Seasonality Stack" output from N-HiTS** and regress it against the observed Swell Period. A strong correlation here would prove that the model internally disentangles long-period swell components from noisy wind-sea data (Trend Stack).
 
-* **Physical Consistency Constraint (Provisional):**
+* **Physical Consistency Constraint (Provisional, needs improvement):**
     * We explore hard-coding a physical constraint into the loss function:
 
 $$
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}\left(\frac{H_s}{L} - \frac{1}{7}\right)
 $$
 
-This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
+We explore whether simple physics-inspired constraints can reduce physically implausible predictions, particularly during extreme events.
 
-### Phase 4: Generalization
+### Phase 5: Generalization
 
 To prove that our findings are not specific to the local bathymetry of Valencia (a common criticism of ML wave studies), we extend the benchmark to **three heterogeneous wave regimes**:
 
@@ -111,4 +131,6 @@ To prove that our findings are not specific to the local bathymetry of Valencia 
 2. other (hopefully other seas)
 3. other (hopefully other seas)
 
-**Goal:** Demonstrate that **N-HiTS** and **PatchTST** generalize across these regimes *without* requiring site-specific feature engineering (e.g., re-tuning window sizes or physics equations for each port).
+All architectures use the same hyperparameters across regions; no site-specific tuning, window resizing, or loss-function modification is permitted during cross-region evaluation.
+
+**Goal:** Demonstrate that **N-HiTS** and **PatchTST** generalize across these regimes *without* requiring site-specific feature engineering (e.g., re-tuning window sizes or physics equations for each port). We will also explore if they generalize without the need of training on a new sea.
