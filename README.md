@@ -1,6 +1,6 @@
 # 🌊 DeepWave-Bench
 
-**Can Foundation Models Replace Feature Engineering?** A comparative study benchmarking N-HiTS and PatchTST against the "Window & Flatten" Random Forest and LSTM baselines for Significant Wave Height ($H_s$), Peak Wave Period ($T_p$), and Wave Direction ($Dir$).
+**Can Foundation Models Replace Feature Engineering?** A comparative study benchmarking N-HiTS and PatchTST (and maybe iTransformer) against the "Window & Flatten" Random Forest and LSTM baselines for Significant Wave Height ($H_s$), Peak Wave Period ($T_p$), and Wave Direction ($Dir$).
 
 ## 📌 Overview
 
