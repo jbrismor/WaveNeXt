@@ -6,7 +6,7 @@
 
 This repository implements the research code for the study **"Evaluating the Efficacy of Modern Time-Series Architectures in Operational Wave Forecasting."**
 
-The recent study by *Portillo Juan et al. (2026)* investigated the trade-offs between deep learning and ensemble methods for wave forecasting in the Mediterranean Sea. Their key findings established that:
+The recent study by ([*Portillo Juan et al. (2026)*](https://www.sciencedirect.com/science/article/pii/S1463500325001416)) investigated the trade-offs between deep learning and ensemble methods for wave forecasting in the Mediterranean Sea. Their key findings established that:
 
 * **Random Forest (RF)**, when combined with their novel **Window & Flatten (WF)** technique, surprisingly outperformed LSTMs in **short-term forecasts** for Wave Height ($H_s$) and Peak Period ($T_p$).
 * **LSTMs** retained superiority for **long-term trends** and were the only viable option for **Wave Direction ($Dir$)**, where RFs failed to capture variability and converged to the mean.
@@ -24,7 +24,7 @@ The recent study by *Portillo Juan et al. (2026)* investigated the trade-offs be
 
 ```
 DeepWave-Bench/
-├── data/
+├── data/                    # hidden file with the data
 │   ├── raw/                 # Original Buoy Data (Valencia)
 │   ├── processed/           # Standardized .parquet files
 │   └── loaders/             # DataLoaders for both "Raw" (Sequential) and "Flattened" (Tabular) formats
@@ -37,14 +37,14 @@ DeepWave-Bench/
 │   ├── contenders/          # The "Challengers" (Modern Archs)
 │   │   ├── nhits.py         # N-HiTS (Basis Expansion)
 │   │   ├── patchtst.py      # PatchTST (Transformer)
-│   │   └── dlinear.py       # DLinear (Simple benchmark)
+│   │   └── itransformer.py  # iTransformer
 │   └── components/
 │       └── circular_loss.py # Von Mises loss implementation
 │
 ├── experiments/
 │   ├── 01_baseline_replication/  # Validate we can match Portillo Juan et al.'s numbers
 │   ├── 02_raw_modern_comparison/ # Modern models (Raw Input) vs RF (WF Input)
-│   └── 03_ablation_windowing/    # Do Modern models improve if we ALSO give them WF? (Optional)
+│   └── 03_ablation_windowing/    # Do Modern models improve if we ALSO give them WF? (maybe)
 │
 ├── analysis/
 │   ├── comparisons.py       # Stat tests (Diebold-Mariano) to prove significance
@@ -64,8 +64,8 @@ DeepWave-Bench/
 
 The study is structured into four progressive phases, moving from baseline replication to advanced generalization across heterogeneous sea states.
 
-### Phase 1: Replication (The Control)
-We first replicate the results of *Portillo Juan et al. (2026) to establish a valid baseline and ensure fair comparison.
+### Phase 1: Replication
+We first replicate the results of ([*Portillo Juan et al. (2026)*](https://www.sciencedirect.com/science/article/pii/S1463500325001416)) to establish a valid baseline and ensure fair comparison.
 
 * **Models:** Random Forest (RF) & Standard LSTM.
 * **Input Engineering:**
@@ -77,15 +77,15 @@ We first replicate the results of *Portillo Juan et al. (2026) to establish a va
     * **K2:** High energy/Storm conditions (The stress test).
     * **K3:** Abrupt transitions (Simulated shock).
 
-### Phase 2: The Challenge (Modern Architectures)
+### Phase 2: Modern Architectures
 
-We train the "Challengers" using **standard sequential input**, removing the manual feature engineering step entirely.
+We train the new architectures using **standard sequential input**, removing the manual feature engineering step entirely.
 
 * **Models:** **N-HiTS** (Neural Hierarchical Interpolation for Time Series) and **PatchTST** (Patch Time Series Transformer).
 * **Input:** Raw time-series window $(H_s, W_s, Dir, T_p)_{t-n...t}$ without derived physics variables.
 * **Hypothesis Test:** If `MAE(PatchTST_Raw) < MAE(RF_Flattened)`, we demonstrate that architectural sophistication (native patching/hierarchical stacking) supersedes manual data restructuring.
 
-### Phase 3: The Hard Variables ($T_p$ & $Dir$)
+### Phase 3: Focus on the Hard Variables ($T_p$ & $Dir$)
 Special focus is placed on advanced techniques for complex oceanographic variables that the baseline RF failed to capture:
 
 * **Wave Direction ($Dir$) with Von Mises Loss:**
@@ -95,9 +95,15 @@ Special focus is placed on advanced techniques for complex oceanographic variabl
     * To validate if the model "learns the physics," we extract the **"Seasonality Stack" output from N-HiTS** and regress it against the observed Swell Period. A strong correlation here would prove that the model internally disentangles long-period swell components from noisy wind-sea data (Trend Stack).
 
 * **Physical Consistency Constraint (Provisional):**
-    * We explore hard-coding a physical constraint into the loss function: $$\mathcal{L}_{total} = \mathcal{L}_{task} + \lambda \cdot \text{ReLU}(H_s/L - 0.142)$$. This penalizes predictions where wave steepness exceeds the physical breaking limit ($\frac{1}{7}$), ensuring the model respects fluid dynamics boundaries.
+    * We explore hard-coding a physical constraint into the loss function: 
 
-### Phase 4: Generalization (Tier 1 Validation)
+      $$
+      \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}\left(\frac{H_s}{L} - \frac{1}{7}\right)
+      $$
+
+      This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
+
+### Phase 4: Generalization
 
 To prove that our findings are not specific to the local bathymetry of Valencia (a common criticism of ML wave studies), we extend the benchmark to **three heterogeneous wave regimes**:
 
