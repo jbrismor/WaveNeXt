@@ -98,7 +98,7 @@ Special focus is placed on advanced techniques for complex oceanographic variabl
     * We explore hard-coding a physical constraint into the loss function: 
 
       $$
-      \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}\left(\frac{H_s}{L} - \frac{1}{7}\right)
+      \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}((\frac{H_s}{L} - \frac{1}{7}))
       $$
 
       This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
