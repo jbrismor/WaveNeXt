@@ -95,13 +95,13 @@ Special focus is placed on advanced techniques for complex oceanographic variabl
     * To validate if the model "learns the physics," we extract the **"Seasonality Stack" output from N-HiTS** and regress it against the observed Swell Period. A strong correlation here would prove that the model internally disentangles long-period swell components from noisy wind-sea data (Trend Stack).
 
 * **Physical Consistency Constraint (Provisional):**
-    * We explore hard-coding a physical constraint into the loss function: 
+    * We explore hard-coding a physical constraint into the loss function:
 
-      $$
-      \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}((\frac{H_s}{L} - \frac{1}{7}))
-      $$
+$$
+\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}\left(\frac{H_s}{L} - \frac{1}{7}\right)
+$$
 
-      This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
+    This penalizes predictions where wave steepness exceeds the physical breaking limit $\left(\frac{1}{7}\right)$, ensuring the model respects fluid dynamics boundaries.
 
 ### Phase 4: Generalization
 
