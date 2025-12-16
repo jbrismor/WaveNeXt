@@ -1,0 +1,5 @@
+probably add info about why we do not use wavewatch3 or SWAN:
+
+“This study focuses on statistical and machine-learning–based post-processing of buoy observations rather than numerical wave modeling systems such as WAVEWATCH III or SWAN. While physics-based models remain indispensable for large-scale wave forecasting, they require detailed wind forcing, bathymetry, and calibration, and are typically evaluated at spatial and temporal scales different from the short-horizon, station-level prediction task considered here. Our goal is not to replace numerical models, but to evaluate whether recent time-series architectures can reduce the need for manual feature engineering in data-driven operational settings.”
+
+If we can get SIMAR (if not ERA5) results and compare, we could see if we do better than them. if not puertos del estado.
