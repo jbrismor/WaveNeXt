@@ -106,7 +106,7 @@ To determine whether the Window & Flatten technique or wavelets provides additio
     * **Raw Sequential:** Standard time-series window $(H_s, W_s, Dir, T_p)_{t-n...t}$.
     * **Window & Flatten:** Same window size $n=6$ flattened into tabular vectors (matching Phase 1).
     * **Wavelets:** Apply different types of wavelets.
-* **Hypothesis Test:** If `MAE(Model_Raw) ≈ MAE(Model_WF)`, we confirm that modern architectures do not require manual windowing and can learn temporal patterns natively. If `MAE(Model_WF) < MAE(Model_Raw)`, it suggests that even sophisticated architectures benefit from explicit temporal feature engineering.
+* **Hypothesis Test:** If `MAE(Model_Raw) ≈ MAE(Model_WF)`, we confirm that modern architectures do not require manual windowing and can learn temporal patterns natively. If `MAE(Model_WF) < MAE(Model_Raw)`, it suggests that even sophisticated architectures benefit from explicit temporal feature engineering. However, it will be worth quantifying how significant is this difference to really decide if it is worth doing this extra work and computation for the gains.
 
 ### Phase 4: Focus on the Hard Variables ($T_p$ & $Dir$)
 We explore advanced techniques for complex oceanographic variables that the baseline RF failed to capture and explore if these techniques can further improve the performance and/or training times of the modern architectures:
