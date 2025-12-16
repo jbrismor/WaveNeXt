@@ -118,7 +118,7 @@ We explore advanced techniques for complex oceanographic variables that the base
     * We explore hard-coding a physical constraint into the loss function:
 
 $$
-\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}\left(\frac{H_s}{L} - \frac{1}{7}\right)
+\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{task}} + \lambda \cdot \text{ReLU}\left(\frac{H_s}{L} - \frac{1}{10}\right)
 $$
 
 We explore whether simple physics-inspired constraints can reduce physically implausible predictions, particularly during extreme events.
