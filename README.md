@@ -1,6 +1,8 @@
 # 🌊 WaveNeXt
 
-**Can modern time-series architectures replace feature engineering?** A comparative study benchmarking **N-HiTS** and **PatchTST** (exploring **iTransformer** for variable correlation) against the "Window & Flatten" Random Forest and LSTM baselines. This study evaluates performance on **Significant Wave Height ($H_s$)**, **Peak Wave Period ($T_p$)**, and **Wave Direction ($Dir$)**, with a specific focus on the **need of preprocessing techniques like WF on modern architectures**, **physics-consistent losses**, **generalization** across heterogeneous sea states.
+**Authors:** Jorge Bris Moreno and Nerea Portillo Juan
+
+**Can modern time-series architectures replace feature engineering?** A comparative study benchmarking **N-HiTS** and **PatchTST** (exploring **iTransformer** for variable correlation) against the "Window & Flatten" Random Forest and LSTM baselines. This study evaluates performance on **Significant Wave Height ($H_s$)**, **Peak Wave Period ($T_p$)**, and **Wave Direction ($Dir$)**, with a specific focus on the **need of preprocessing techniques like WF or wavelets on modern architectures**, **physics-consistent losses**, and **generalization** across heterogeneous sea states.
 
 ## Contributions
 
@@ -97,16 +99,17 @@ We train the new architectures using **standard sequential input**, removing the
 
 **Do Modern models improve if we ALSO give them WF?**
 
-To determine whether the Window & Flatten technique provides additional benefit to modern architectures, we conduct an ablation study where we train **N-HiTS** and **PatchTST** using both raw sequential input and Window & Flatten input.
+To determine whether the Window & Flatten technique or wavelets provides additional benefit to modern architectures, we conduct an ablation study where we train **N-HiTS**, **PatchTST**, and **iTransformer** using both raw sequential input and Window & Flatten input.
 
 * **Models:** **N-HiTS** and **PatchTST** (same as Phase 2).
 * **Input Variants:**
     * **Raw Sequential:** Standard time-series window $(H_s, W_s, Dir, T_p)_{t-n...t}$.
     * **Window & Flatten:** Same window size $n=6$ flattened into tabular vectors (matching Phase 1).
+    * **Wavelets:** Apply different types of wavelets.
 * **Hypothesis Test:** If `MAE(Model_Raw) ≈ MAE(Model_WF)`, we confirm that modern architectures do not require manual windowing and can learn temporal patterns natively. If `MAE(Model_WF) < MAE(Model_Raw)`, it suggests that even sophisticated architectures benefit from explicit temporal feature engineering.
 
 ### Phase 4: Focus on the Hard Variables ($T_p$ & $Dir$)
-We explore advanced techniques for complex oceanographic variables that the baseline RF failed to capture and explore if these techniques can further improve the performance of the modern architectures:
+We explore advanced techniques for complex oceanographic variables that the baseline RF failed to capture and explore if these techniques can further improve the performance and/or training times of the modern architectures:
 
 * **Wave Direction ($Dir$) with Von Mises Loss:**
     * Standard regression (MSE) fails at the $0^\circ/360^\circ$ discontinuity. We implement a **Von Mises Probabilistic Loss** within N-HiTS, specifically designed for circular data distributions. This allows the model to "wrap around" North correctly, penalizing errors based on angular distance rather than Euclidean distance.
@@ -123,7 +126,7 @@ $$
 
 We explore whether simple physics-inspired constraints can reduce physically implausible predictions, particularly during extreme events.
 
-### Phase 5: Generalization
+### Phase 5: Generalization (possible application as part of this project or maybe a later project)
 
 To prove that our findings are not specific to the local bathymetry of Valencia (a common criticism of ML wave studies), we extend the benchmark to **three heterogeneous wave regimes**:
 
