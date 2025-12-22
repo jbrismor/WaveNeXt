@@ -1,3 +1,8 @@
 data/
 .venv/
 .python-version
+Nerea/
+.csv
+__pycache__/
+DS_Store/
+.DS_Store/
